@@ -1,16 +1,16 @@
 # Memanggil library yang dibutuhkan
-import numpy as np
-import pandas as pd
-import matplotlib.pyplot as plt
-import sklearn
+import numpy as np#kebutuhan scientific
+import pandas as pd #untuk manipulasi data
+import matplotlib.pyplot as plt #untuk menampilkan grafik plot
+import sklearn #untuk mengambil metode/algoritma dalam machinelearning
 
 #Memanggil dataset
-dataset = pd.read_csv('....csv')
-# Sumbu X adalah Gaji, dan Sumbu Y adalah Pengalaman kerja
+dataset = pd.read_csv(''....csv')
+# Sumbu X adalah pengalaman, dan Sumbu Y adalah tahun
 x = dataset.iloc[:,:-1].values
 y = dataset.iloc[:,1].values
 
-#menampulkan grafik data asli
+#menampilkan grafik data asli
 dataku = pd.DataFrame(dataset)
 #Visualisasi Data
 plt.scatter(dataku.Tahun, dataku.Gaji)
