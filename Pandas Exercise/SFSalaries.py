@@ -29,3 +29,15 @@ print(df['JobTitle'].nunique())
 print(df['JobTitle'].value_counts().head(5))
 #** How many Job Titles were represented by only one person in 2013? 
 # (e.g. Job Titles with only one occurence in 2013?) **
+print(sum(df[df['Year']== 2013]['JobTitle'].value_counts()==1))
+#** How many people have the word Chief in their job title? (This is pretty tricky) **
+def chief_string(string):
+    if 'chief' in string.lower().split():
+        return True
+    else:
+        return False
+
+print(sum(df['JobTitle'].apply(lambda x:chief_string(x))))
+#** Bonus: Is there a correlation between length of the Job Title string and Salary? **
+df['title_len'] = df['JobTitle'].apply(len)
+print(df[['title_len','TotalPayBenefits']].corr())
