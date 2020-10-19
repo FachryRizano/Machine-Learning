@@ -82,3 +82,9 @@ dmap = {0:'Mon',1:'Tue',2:'Wed',3:'Thu',4:'Fri',5:'Sat',6:'Sun'}
 df['Day of Week'] = df['Day of Week'].map(dmap)
 # print(df['Day of Week'])
 
+#** Now use seaborn to create a countplot of the Day 
+#of Week column with the hue based off of the Reason
+# column. **
+
+sns.countplot(x='Day of Week',data=df,hue='Reason')
+
