@@ -71,12 +71,14 @@ and Day of Week. You will create these columns based off
 of the timeStamp column, reference the solutions if you 
 get stuck on this step.***
 '''
-# df['Hour'] = df['timeStamp'].apply(lambda tanggal: tanggal.hour)
-# df['Month'] = df['timeStamp'].apply(lambda tanggal:tanggal.month)
-# df['Day of Week'] = df['timeStamp'].apply(lambda tanggal:tanggal.dayofweek)
+df['Hour'] = df['timeStamp'].apply(lambda tanggal: tanggal.hour)
+df['Month'] = df['timeStamp'].apply(lambda tanggal:tanggal.month)
+df['Day of Week'] = df['timeStamp'].apply(lambda tanggal:tanggal.dayofweek)
 
 # ** Notice how the Day of Week is an integer 0-6. 
 # Use the .map() with this dictionary to map the actual 
 # string names to the day of the week: **
-# dmap = {0:'Mon',1:'Tue',2:'Wed',3:'Thu',4:'Fri',5:
-# 'Sat',6:'Sun'}
+dmap = {0:'Mon',1:'Tue',2:'Wed',3:'Thu',4:'Fri',5:'Sat',6:'Sun'}
+df['Day of Week'] = df['Day of Week'].map(dmap)
+# print(df['Day of Week'])
+
