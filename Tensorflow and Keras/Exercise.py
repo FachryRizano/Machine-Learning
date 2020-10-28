@@ -159,11 +159,85 @@ df = df.drop(['verification_status','application_type','initial_list_status','pu
 df = pd.concat([df,dummies],axis=1)
 
 #HOME_OWNERSHIP FEATURE
-print(df['home_ownership'].value_counts())
+# print(df['home_ownership'].value_counts())
 df['home_ownership'] = df['home_ownership'].replace(['NONE','ANY'],'OTHER')
 
 dummies = pd.get_dummies(df['home_ownership'],drop_first=True)
 # print(df.columns)
 df = df.drop('home_ownership',axis=1)
 df = pd.concat([df,dummies],axis=1)
-print(df.columns)
+
+#ADDRESS FEATURE
+df['zip_code'] = df['address'].apply(lambda address: address[-5:])
+# print(df['zip_code'].head(5))
+
+dummies = pd.get_dummies(df['zip_code'],drop_first=True)
+df = df.drop(['zip_code','address'],axis=1)
+df = pd.concat([df,dummies],axis=1)
+# print(df.columns)
+
+#issue_d feature
+df = df.drop('issue_d',axis=1)
+
+#EARLIEST_CR_LINE FEATURE
+# print(df['earliest_cr_line'].head(5))
+df['earliest_cr_year'] = df['earliest_cr_line'].apply(lambda date: int(date[-4:]))
+# print(df['earliest_cr_year'].head(5))
+df = df.drop('earliest_cr_line',axis=1)
+
+'''
+TRAIN TEST SPLIT
+'''
+from sklearn.model_selection import train_test_split
+df = df.drop('loan_status',axis=1)
+# print(df.info())
+X = df.drop('loan_repaid',axis=1).values
+y= df['loan_repaid'].values
+
+#Grabbing a Sample fro Training Time
+df = df.sample(frac=0.1,random_state=101)
+print(len(df))
+
+X_train, X_test, y_train, y_test = train_test_split(X,y,test_size=0.2,random_state=101)
+
+'''
+NORMALIZING THE DATA
+'''
+from sklearn.preprocessing import MinMaxScaler
+scaler = MinMaxScaler()
+X_train = scaler.fit_transform(X_train)
+X_test = scaler.transform(X_test)
+
+'''
+CREATING THE MODEL
+'''
+
+import tensorflow as tf
+from tensorflow.keras.models import Sequential
+from tensorflow.keras.layers import Dense, Dropout
+model = Sequential()
+model.add(Dense(78,activation='relu'))
+model.add(Dropout(0.2))
+model.add(Dense(39,activation='relu'))
+model.add(Dropout(0.2))
+model.add(Dense(19,activation='relu'))
+model.add(Dropout(0.2))
+model.add(Dense(1,activation='sigmoid'))
+model.compile(optimizer='adam',loss='binary_crossentropy')
+
+model.fit(X_train,y_train,batch_size=256,epochs=25,validation_data=(X_test,y_test))
+from tensorflow.keras.models import load_model
+model.save('full_data_project_model.h5')
+
+'''
+EVALUATING MODEL PERFORMANCE
+'''
+
+losses = pd.DataFrame(model.history.history,columns=['loss','val_loss'])
+# losses.plot()
+# plt.show()
+
+prediction = model.predict_classes(X_test)
+from sklearn.metrics import classification_report,confusion_matrix
+print(classification_report(y_test,prediction))
+print(confusion_matrix(y_test,prediction))
